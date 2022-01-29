@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - .:/go_telegram_bot
+    ports:
+      - "3000:3000"
+    command: curl -F "url=https://${LOCALTUNNEL_SUBDOMAIN}.loca.lt/"  https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook
+
+  localtunnel:
+    image: efrecon/localtunnel:latest
+    links:
+      - web
+    # environment:
+    #   - DOMAIN=web
+    #   - PORT=3000
+    command: --local-host web --port 3000 --subdomain ${LOCALTUNNEL_SUBDOMAIN}
